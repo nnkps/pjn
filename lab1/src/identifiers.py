@@ -4,8 +4,8 @@ from pathlib import Path
 import math
 import json
 
-from corpus_parser import CorpusParser
-from config import STATISTICS_FILENAME, NGRAMS_DIRNAME
+from .corpus_parser import CorpusParser
+from .config import STATISTICS_FILENAME, NGRAMS_DIRNAME
 
 
 def innerproduct(d1, d2):

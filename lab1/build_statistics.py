@@ -6,8 +6,8 @@ import shutil
 import logging
 import argparse
 
-from corpus_parser import CorpusParser
-from config import STATISTICS_FILENAME, NGRAMS_DIRNAME
+from src.corpus_parser import CorpusParser
+from src.config import STATISTICS_FILENAME, NGRAMS_DIRNAME
 
 logging.getLogger().setLevel(logging.INFO)
 

@@ -3,7 +3,7 @@
 import argparse
 from pprint import pprint
 
-from identifiers import NgramLanguageIdentifier
+from src.identifiers import NgramLanguageIdentifier
 
 
 parser = argparse.ArgumentParser(description='Determine language of given text')
