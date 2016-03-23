@@ -1,8 +1,11 @@
 import argparse
 import re
+import logging
 from functools import partial
 
 from lev import ModifiedLevenshteinDistance, NormalLevenshteinDistance
+
+logging.getLogger().setLevel(logging.INFO)
 
 
 class CorrectionEngine:
@@ -23,19 +26,24 @@ class CorrectionEngine:
         return pattern.sub(replace_word, text)
 
     def find_similar(self, word):
+        logging.info('Starting to search for similar form for word %s', word)
         word_len = len(word)
         len_range = range(word_len - 1, word_len + 2)
 
         obj = partial(ModifiedLevenshteinDistance, word.lower())
         distance_to_word = lambda form: obj(form).compute()
 
-        # for form in self._forms:
-        #     if len(form) in len_range:
-        #         dist = distance_to_word(form)
-        #         if dist < 1:
-        #             return form
-        # return word
-        return min(filter(lambda x: len(x) in len_range, self._forms), key=distance_to_word)
+        min_dist = None
+        best_form = None
+        for form in self._forms:
+            if len(form) in len_range:
+                dist = distance_to_word(form)
+                if min_dist is None or dist < min_dist:
+                    min_dist = dist
+                    best_form = form
+        logging.info('Replacing %s with %s, distance: %.2f', word, best_form, min_dist)
+        return best_form
+        # return min(filter(lambda x: len(x) in len_range, self._forms), key=distance_to_word)
 
 parser = argparse.ArgumentParser(description='Correct mistakes in text')
 parser.add_argument('text', help='Input text')
