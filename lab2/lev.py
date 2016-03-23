@@ -1,5 +1,7 @@
+import argparse
 
-class LevenshteinDistance:
+
+class NormalLevenshteinDistance:
 
     def __init__(self, a, b):
         if len(a) < len(b):
@@ -25,11 +27,11 @@ class LevenshteinDistance:
         return self._compute(self._len_a, self._len_b)
 
 
-assert LevenshteinDistance('BIURKO', 'PIÓRO').compute() == 3
+assert NormalLevenshteinDistance('BIURKO', 'PIÓRO').compute() == 3
 
 
-class ModifiedLevenshteinDistance(LevenshteinDistance):
-    _SCORE_FOR_MISTAKE = 0.5
+class ModifiedLevenshteinDistance(NormalLevenshteinDistance):
+    _SCORE_FOR_MISTAKE = 0.25
     _PAIRS = (
         # ortographic
         {'ó', 'u'},
@@ -65,6 +67,18 @@ class ModifiedLevenshteinDistance(LevenshteinDistance):
         if a[i - 1] == b[j - 1]:
             return 0
 
+        try:
+            if a[i - 1] == b[j] and a[i] == b[j - 1]:
+                return self._SCORE_FOR_MISTAKE
+        except IndexError:
+            pass
+
+        try:
+            if a[i - 2] == b[j - 1] and a[i - 1] == b[j - 2]:
+                return self._SCORE_FOR_MISTAKE
+        except IndexError:
+            pass
+
         possible_pairs = [{a[i - 1], b[j - 1]},
                           {a[i - 1], b[j - 1 : j + 1]},
                           {a[i - 1 : i + 1], b[j - 1]},
@@ -74,22 +88,22 @@ class ModifiedLevenshteinDistance(LevenshteinDistance):
             if pair in self._PAIRS:
                 return self._SCORE_FOR_MISTAKE
 
-        try:
-            if {a[i - 1], a[i]} == {b[j - 1], b[j]}:
-                return self._SCORE_FOR_MISTAKE
-        except IndexError:
-            pass
-
-        try:
-            if {a[i - 2], a[i - 1]} == {b[j - 2], b[j - 1]}:
-                return self._SCORE_FOR_MISTAKE
-        except IndexError:
-            pass
-
         return super()._comparison(i, j)
 
+parser = argparse.ArgumentParser(description='Compute levenshtein distance')
+parser.add_argument('word1', help='First word')
+parser.add_argument('word2', help='Second word')
 
 if __name__ == '__main__':
-    print(ModifiedLevenshteinDistance('wtorek', 'wotrek').compute())
+    args = parser.parse_args()
+    word1 = args.word1
+    word2 = args.word2
+
+    print('Normal: "{}", "{}": {}'.format(word1, word2,
+        NormalLevenshteinDistance(word1, word2).compute()))
+
+    print('Modified: "{}", "{}": {}'.format(word1, word2,
+        ModifiedLevenshteinDistance(word1, word2).compute()))
+
 
 
