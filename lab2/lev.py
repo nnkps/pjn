@@ -4,20 +4,17 @@ import argparse
 class NormalLevenshteinDistance:
 
     def __init__(self, a, b):
-        if len(a) < len(b):
-            a, b = b, a
-
         self._a = a.lower()
         self._b = b.lower()
 
     def _comparison(self, i, j):
         return int(self._a[i] != self._b[j])
 
-    def compute(self):
+    def compute(self, cut=None):
         a, b = self._a, self._b
         if a == b: return 0
-        elif len(a) == 0: return len(a)
-        elif len(b) == 0: return len(b)
+        elif len(a) == 0: return len(b)
+        elif len(b) == 0: return len(a)
         v0 = [None] * (len(b) + 1)
         v1 = [None] * (len(b) + 1)
 
