@@ -4,6 +4,7 @@ from functools import partial
 
 from lev import ModifiedLevenshteinDistance, NormalLevenshteinDistance
 
+
 class CorrectionEngine:
 
     def __init__(self):
@@ -28,14 +29,13 @@ class CorrectionEngine:
         obj = partial(ModifiedLevenshteinDistance, word.lower())
         distance_to_word = lambda form: obj(form).compute()
 
-        for form in self._forms:
-            if len(form) in len_range:
-                dist = distance_to_word(form)
-                print(dist)
-                if dist < 1:
-                    return form
-        return word
-        # return min(filter(lambda x: len(x) in len_range, self._forms), key=distance_to_word)
+        # for form in self._forms:
+        #     if len(form) in len_range:
+        #         dist = distance_to_word(form)
+        #         if dist < 1:
+        #             return form
+        # return word
+        return min(filter(lambda x: len(x) in len_range, self._forms), key=distance_to_word)
 
 parser = argparse.ArgumentParser(description='Correct mistakes in text')
 parser.add_argument('text', help='Input text')
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     text = args.text
 
     engine = CorrectionEngine()
-    corrected = engine.find_similar(text)
+    corrected = engine.correct_text(text)
     print(corrected)
 
 
