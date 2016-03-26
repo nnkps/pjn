@@ -1,17 +1,16 @@
-import argparse
 import re
 import logging
 from functools import partial
 
-from lev import ModifiedLevenshteinDistance, NormalLevenshteinDistance
+from .distances import ModifiedLevenshteinDistance, NormalLevenshteinDistance
 
 logging.getLogger().setLevel(logging.INFO)
 
 
 class CorrectionEngine:
 
-    def __init__(self):
-        f = open('forms/formy.txt', encoding='ISO-8859-2')
+    def __init__(self, forms_file='forms/formy.txt'):
+        f = open(forms_file, encoding='ISO-8859-2')
         self._forms = set(word.strip() for word in f)
 
     def correct_text(self, text):
@@ -44,16 +43,3 @@ class CorrectionEngine:
         logging.info('Replacing %s with %s, distance: %.2f', word, best_form, min_dist)
         return best_form
         # return min(filter(lambda x: len(x) in len_range, self._forms), key=distance_to_word)
-
-parser = argparse.ArgumentParser(description='Correct mistakes in text')
-parser.add_argument('text', help='Input text')
-
-if __name__ == '__main__':
-    args = parser.parse_args()
-    text = args.text
-
-    engine = CorrectionEngine()
-    corrected = engine.correct_text(text)
-    print(corrected)
-
-

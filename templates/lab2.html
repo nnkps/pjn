@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="bs-docs-section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="page-header">
+          <h1 id="forms">Correct text</h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="well bs-component">
+          <form class="form-horizontal" action="/lab2" method="POST">
+            <fieldset>
+              <div class="form-group">
+                <label for="textArea" class="col-lg-2 control-label">Text</label>
+                <div class="col-lg-10">
+                  <textarea class="form-control" rows="3" id="text_to_correct" name="text_to_correct">{% if text_to_correct %}{{ text_to_correct }}{% endif %}</textarea>
+                  <span class="help-block">Input text for correction.</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-lg-10 col-lg-offset-2">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        {% if corrected_text %}
+          <div class="well">
+            {{ corrected_text }}
+          </div>
+          {% endif %}
+      </div>
+
+    </div>
+  </div>
+{% endblock %}
